@@ -16,10 +16,13 @@ func CheckURL(url string) Result {
 	client := http.Client{
 		Timeout: 5 * time.Second,
 	}
+	start := time.Now()
 	resp, err := client.Get(url)
+	responseTime := time.Since(start)
 	if err != nil {
-		return Result{URL: url, Error: err}
+		return Result{URL: url, Error: err, ResponseTime: responseTime.Round(time.Millisecond)}
 	}
 	defer resp.Body.Close()
-	return Result{URL: url, Status: resp.StatusCode}
+	return Result{URL: url, Status: resp.StatusCode, ResponseTime: responseTime.Round(time.Millisecond)}
+
 }
